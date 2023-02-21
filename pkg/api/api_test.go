@@ -14,6 +14,7 @@ import (
 )
 
 const notaExitosa = `{"message":"Nota creada correctamente"}`
+const ModificacionExitosa = `{"message":"Nota modificada correctamente"}`
 
 func autoRequest(r *gin.Engine, method, url, expect string, body []byte, checkData bool) error {
 	req, _ := http.NewRequest(method, url, bytes.NewBuffer(body))
@@ -88,6 +89,28 @@ func TestNota(t *testing.T) {
 		t.Errorf("Error expected")
 	}
 	if err := autoRequest(r, "GET", "/Nota", notaExitosa, json, false); err == nil {
+		t.Errorf("Error expected")
+	}
+}
+
+func TestUpdateNota(t *testing.T) {
+	var jsonNote = []byte(`{"cuerpo":"Nota MODIFICADA a traves de la API","titulo":"Nota de Prueba", "tema":"Principal"}`)
+	var jsonVoidNote = []byte(`{"cuerpo":"","titulo":"Nota de Prueba2", "tema":"Principal"}`)
+	var jsonVoidTitleNote = []byte(`{"cuerpo":"Nota creada a traves de la API","titulo":"", "tema":"Principal"}`)
+	var jsonVoidThemeNote = []byte(`{"cuerpo":"Nota creada a traves de la API","titulo":"Nota de Prueba3", "tema":""}`)
+	r := gin.Default()
+	r.POST("/UpdateNota", api.UpdateNota)
+	if err := autoRequest(r, "POST", "/UpdateNota?id=1", ModificacionExitosa, jsonNote, true); err != nil {
+		t.Errorf("Error: %v", err)
+	}
+	//this should fail
+	if err := autoRequest(r, "POST", "/UpdateNota?id=1", ModificacionExitosa, jsonVoidNote, true); err == nil {
+		t.Errorf("Error expected")
+	}
+	if err := autoRequest(r, "POST", "/UpdateNota?id=1", ModificacionExitosa, jsonVoidTitleNote, true); err == nil {
+		t.Errorf("Error expected")
+	}
+	if err := autoRequest(r, "POST", "/UpdateNota?id=1", ModificacionExitosa, jsonVoidThemeNote, true); err == nil {
 		t.Errorf("Error expected")
 	}
 }

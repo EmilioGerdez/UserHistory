@@ -12,11 +12,45 @@ import (
 func RestServer() {
 	router := gin.Default()
 	router.POST("/CreateNote", CreateNote)
+	router.POST("/UpdateNota", UpdateNota)
 	router.GET("/TodasLasNotas", TodasLasNotas)
 	router.GET("/Nota", Nota)
 	router.Run("localhost:8080")
 }
 
+func UpdateNota(c *gin.Context) {
+	var nota models.Nota
+	if err := c.ShouldBindJSON(&nota); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	if nota.Cuerpo == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Nota vacia"})
+		return
+	}
+
+	if nota.Titulo == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Nota sin Titulo"})
+		return
+	}
+
+	if nota.Tema == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Nota sin Tema"})
+		return
+	}
+
+	id, err := strconv.Atoi(c.Query("id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Id invalido"})
+		return
+	}
+	if err := models.ModificarNota(&nota, &id); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"message": "Nota modificada correctamente"})
+	return
+}
 func Nota(c *gin.Context) {
 	var nota models.Nota
 

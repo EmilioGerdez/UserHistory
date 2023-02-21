@@ -40,6 +40,22 @@ func CrearNota(nota *Nota) error {
 	return nil
 }
 
+func ModificarNota(nota *Nota, id *int) error {
+	var note Nota
+	result := DB.First(&note, id)
+	if result.Error != nil {
+		return result.Error
+	}
+	note.Cuerpo = nota.Cuerpo
+	note.Tema = nota.Tema
+	note.Titulo = nota.Titulo
+	result = DB.Save(&note)
+
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
+}
 func EntregarNota(nota *Nota, id *int) error {
 	result := DB.Find(nota, id)
 	if result.Error != nil {
