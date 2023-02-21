@@ -11,6 +11,7 @@ type Nota struct {
 	gorm.Model
 	Titulo string `json:"titulo,omitempty"`
 	Cuerpo string `json:"cuerpo,omitempty"`
+	Tema   string `json:"tema,omitempty"`
 }
 
 var DB *gorm.DB
@@ -33,6 +34,21 @@ func Connection() error {
 func CrearNota(nota *Nota) error {
 	result := DB.Create(nota)
 
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
+}
+
+func EntregarNota(nota *Nota, id *int) error {
+	result := DB.Find(nota, id)
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
+}
+func EntregarNotas(notas *[]Nota) error {
+	result := DB.Find(notas)
 	if result.Error != nil {
 		return result.Error
 	}

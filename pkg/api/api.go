@@ -2,6 +2,8 @@ package api
 
 import (
 	"net/http"
+	"sort"
+	"strconv"
 	"userhistory/pkg/models"
 
 	"github.com/gin-gonic/gin"
@@ -10,8 +12,63 @@ import (
 func RestServer() {
 	router := gin.Default()
 	router.POST("/CreateNote", CreateNote)
+	router.GET("/TodasLasNotas", TodasLasNotas)
+	router.GET("/Nota", Nota)
 	router.Run("localhost:8080")
+}
 
+func Nota(c *gin.Context) {
+	var nota models.Nota
+
+	id, err := strconv.Atoi(c.Query("id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Id invalido"})
+		return
+	}
+
+	err = models.EntregarNota(&nota, &id)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	}
+
+	c.JSON(http.StatusOK, nota)
+
+}
+
+func TodasLasNotas(c *gin.Context) {
+	var notas []models.Nota
+	orden := c.Query("sort")
+	if orden != "T" && orden != "t" && orden != "d" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Orden invalido"})
+		return
+	}
+	err := models.EntregarNotas(&notas)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	}
+	switch orden {
+	case "T":
+		sort.Slice(
+			notas, func(i, j int) bool {
+				return notas[i].Titulo < notas[j].Titulo
+			},
+		)
+
+	case "t":
+		sort.Slice(
+			notas, func(i, j int) bool {
+				return notas[i].Tema < notas[j].Tema
+			},
+		)
+
+	case "d":
+		sort.Slice(
+			notas, func(i, j int) bool {
+				return notas[i].CreatedAt.Unix() < notas[j].CreatedAt.Unix()
+			},
+		)
+	}
+	c.JSON(http.StatusOK, notas)
 }
 
 func CreateNote(c *gin.Context) {
@@ -29,7 +86,12 @@ func CreateNote(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Nota sin Titulo"})
 		return
 	}
-	if err := models.CrearNota(&nota); err!= nil {
+
+	if nota.Tema == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Nota sin Tema"})
+		return
+	}
+	if err := models.CrearNota(&nota); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
