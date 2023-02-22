@@ -81,7 +81,7 @@ func TestNota(t *testing.T) {
 	r := gin.Default()
 	r.GET("/Nota", api.Nota)
 
-	if err := autoRequest(r, "GET", "/Nota?id=0", notaExitosa, json, false); err != nil {
+	if err := autoRequest(r, "GET", "/Nota?id=1", notaExitosa, json, false); err != nil {
 		t.Errorf("Error: %v", err)
 	}
 	//this should fail
