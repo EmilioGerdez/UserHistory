@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html >
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Note App</title>
+    <link rel="stylesheet" href="/assets/style.css" />
+  </head>
+  <body>
+<section class="container">
+  <table class="default">
+      {{ range.Notas }}
+  <tr>
+    <td>
+      <p class="description">Titulo: {{ .Titulo }}</p>
+    </td>
+    <td>
+          <p class="description">Tema: {{ .Tema }}</p>
+    </td>
+    <td>
+          <p class="description">Cuerpo: {{ .Cuerpo }}</p>
+    </td>
+    <td>
+          <p class="description">Fecha de creacion: {{ .CreatedAt }}</p>
+    </td>
+    <td>
+          <p class="description">Fecha de ultima modificacion: {{ .UpdatedAt }}</p>
+    </td>
+    <td>
+    <button onclick="location.href='/ModificarNota?id={{.ID}}'" >
+      MODIFICAR
+    </button>
+    </td>
+    <td>
+    <button onclick="location.href='/ModificarNota?id={{.ID}}'" >
+      ELIMINAR
+    </button>
+    </td>
+  </tr>
+      {{ end }}
+</table>
+  </section>
+  </body>
+</html>

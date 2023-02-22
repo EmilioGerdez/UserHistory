@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html >
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Note App</title>
+    <link rel="stylesheet" href="/assets/style.css" />
+  </head>
+  <body>
+    <div1>
+
+    <main>
+      <header>
+        <form action="/Buscar" method="GET">
+          <input
+            autofocus
+            class="search-input"
+            value=""
+            placeholder="buscar nota"
+            type="search"
+            name="q"
+          />
+<fieldset padding="16px" max-width="500px">
+    <legend>Selecciona tipo de busquead:</legend>
+
+    <div>
+      <input type="radio" id="titulo" name="sort" value="T"
+             checked>
+      <label for="titulo">Titulo</label>
+    </div>
+
+    <div>
+      <input type="radio" id="tema" name="sort" value="t">
+      <label for="tema">Tema</label>
+    </div>
+
+    <div>
+      <input type="radio" id="cuerpo" name="sort" value="c">
+      <label for="cuerpo">Cuerpo</label>
+    </div>
+</fieldset>
+<input type="submit" value="BUSCAR">
+        </form>
+      </header>
+    </main>
+    </div1>
+    <div2>
+    <button onclick="location.href='/CrearNota'" >
+      Crear Nota
+    </button>
+    </div2>
+
+    <div3>
+        <form action="/Notas" method="GET">
+<fieldset padding="16px" max-width="500px">
+    <legend>Selecciona ordenamiento:</legend>
+
+    <div>
+      <input type="radio" id="titulo" name="sort" value="T"
+             checked>
+      <label for="titulo">Titulo</label>
+    </div>
+
+    <div>
+      <input type="radio" id="tema" name="sort" value="t">
+      <label for="tema">Tema</label>
+    </div>
+
+    <div>
+      <input type="radio" id="cuerpo" name="sort" value="d">
+      <label for="cuerpo">Fecha </label>
+    </div>
+</fieldset>
+<input type="submit" value="LISTAR">
+        </form>
+    </div3>
+  </body>
+</html>

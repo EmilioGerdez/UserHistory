@@ -1,0 +1,26 @@
+
+<!DOCTYPE html>
+<html >
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Note App</title>
+    <link rel="stylesheet" href="/assets/style.css" />
+  </head>
+  <body>
+<form action="/Modificar">
+  <label for="title">Titulo:</label><br>
+  <input type="text" id="title" name="title" value="{{.Nota.Titulo}}"><br>
+  <label for="theme">Tema:</label><br>
+  <input type="text" id="theme" name="theme"value="{{.Nota.Tema}}"><br>
+  <label for="body">Cuerpo:</label><br>
+  <textarea id="cuerpo" name="cuerpo"rows="4" cols="50"value="">{{.Nota.Cuerpo}}</textarea><br>
+  <input type="hidden" name="id" value="{{.Nota.ID}}" />
+<input type="submit" value="MODIFICAR">
+</form>
+    <button onclick="location.href='/Eliminar?id={{.Nota.ID}}'" >
+      ELIMINAR NOTA
+    </button>
+  </body>
+</html>
