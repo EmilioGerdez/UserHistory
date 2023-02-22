@@ -6,11 +6,14 @@ import (
 	"strconv"
 	"userhistory/pkg/models"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
 func RestServer() {
 	router := gin.Default()
+	router.Use(cors.New(cors.Config{
+		AllowOrigins: []string{"*"}}))
 	router.POST("/CreateNote", CreateNote)
 	router.POST("/UpdateNota", UpdateNota)
 	router.GET("/TodasLasNotas", TodasLasNotas)
@@ -132,4 +135,40 @@ func CreateNote(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{"message": "Nota creada correctamente"})
 	return
+}
+
+func BuscarNota(c *gin.Context) {
+	var notas []models.Nota
+	orden := c.Query("sort")
+	if orden != "T" && orden != "t" && orden != "c" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Tipo de busqueda invalido"})
+		return
+	}
+	err := models.EntregarNotas(&notas)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	}
+	switch orden {
+	case "T":
+		sort.Slice(
+			notas, func(i, j int) bool {
+				return notas[i].Titulo < notas[j].Titulo
+			},
+		)
+
+	case "t":
+		sort.Slice(
+			notas, func(i, j int) bool {
+				return notas[i].Tema < notas[j].Tema
+			},
+		)
+
+	case "d":
+		sort.Slice(
+			notas, func(i, j int) bool {
+				return notas[i].CreatedAt.Unix() < notas[j].CreatedAt.Unix()
+			},
+		)
+	}
+	c.JSON(http.StatusOK, notas)
 }
