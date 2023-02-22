@@ -1,6 +1,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 
 	"gorm.io/driver/sqlite"
@@ -22,7 +23,7 @@ func init() {
 }
 func Connection() error {
 	var err error
-	DB, err = gorm.Open(sqlite.Open("gorm.db"), &gorm.Config{})
+	DB, err = gorm.Open(sqlite.Open("../../src/gorm.db"), &gorm.Config{})
 	if err != nil {
 		log.Println("Error en la conexion a la base de datos: ", err)
 		return err
@@ -57,7 +58,7 @@ func ModificarNota(nota *Nota, id *int) error {
 	return nil
 }
 func EntregarNota(nota *Nota, id *int) error {
-	result := DB.Find(nota, id)
+	result := DB.First(nota, id)
 	if result.Error != nil {
 		return result.Error
 	}
@@ -65,6 +66,22 @@ func EntregarNota(nota *Nota, id *int) error {
 }
 func EntregarNotas(notas *[]Nota) error {
 	result := DB.Find(notas)
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
+}
+
+func BuscarNotas(notas *[]Nota, tipo, busqueda string) error {
+	result := DB.Where(fmt.Sprintf("%v LIKE ?", tipo), fmt.Sprintf("%%%v%%", busqueda)).Find(&notas)
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
+}
+
+func EliminarNota(id *int) error {
+	result := DB.Delete(&Nota{}, id)
 	if result.Error != nil {
 		return result.Error
 	}
