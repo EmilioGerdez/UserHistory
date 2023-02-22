@@ -1,14 +1,15 @@
 package main
 
 import (
-	"log"
 	"userhistory/pkg/api"
 	"userhistory/pkg/routes"
 )
 
 func main() {
+	//corre el servidor
 	go routes.Server()
+	//corre el servidor REST
 	go api.RestServer()
-	log.Println("running")
+	//mantiene las goroutinas vivas
 	<-make(chan bool)
 }

@@ -16,6 +16,9 @@ import (
 const notaExitosa = `{"message":"Nota creada correctamente"}`
 const ModificacionExitosa = `{"message":"Nota modificada correctamente"}`
 
+//autoRequest funcion que se encarga de probar los endpoints entregados comparando elr etorno
+//con un resultado esperado
+//tambien recibe una flag "checkData" por si solo necesita verificar el status de la response
 func autoRequest(r *gin.Engine, method, url, expect string, body []byte, checkData bool) error {
 	req, _ := http.NewRequest(method, url, bytes.NewBuffer(body))
 	w := httptest.NewRecorder()
@@ -42,7 +45,7 @@ func TestCreateNote(t *testing.T) {
 	if err := autoRequest(r, "POST", "/CreateNote", notaExitosa, jsonNote, true); err != nil {
 		t.Errorf("Error: %v", err)
 	}
-	//this should fail
+	//test de fallos intencionales
 	if err := autoRequest(r, "POST", "/CreateNote", notaExitosa, jsonVoidNote, true); err == nil {
 		t.Errorf("Error expected")
 	}
@@ -67,7 +70,7 @@ func TestTodasLasNotas(t *testing.T) {
 	if err := autoRequest(r, "GET", "/TodasLasNotas?sort=d", notaExitosa, json, false); err != nil {
 		t.Errorf("Error: %v", err)
 	}
-	//this should fail
+	//test de fallos intencionales
 	if err := autoRequest(r, "GET", "/TodasLasNotas?", notaExitosa, json, false); err == nil {
 		t.Errorf("Error expected")
 	}
@@ -84,7 +87,7 @@ func TestNota(t *testing.T) {
 	if err := autoRequest(r, "GET", "/Nota?id=1", notaExitosa, json, false); err != nil {
 		t.Errorf("Error: %v", err)
 	}
-	//this should fail
+	//test de fallos intencionales
 	if err := autoRequest(r, "GET", "/Nota?id=string", notaExitosa, json, false); err == nil {
 		t.Errorf("Error expected")
 	}
@@ -103,7 +106,7 @@ func TestUpdateNota(t *testing.T) {
 	if err := autoRequest(r, "POST", "/UpdateNota?id=1", ModificacionExitosa, jsonNote, true); err != nil {
 		t.Errorf("Error: %v", err)
 	}
-	//this should fail
+	//test de fallos intencionales
 	if err := autoRequest(r, "POST", "/UpdateNota?id=1", ModificacionExitosa, jsonVoidNote, true); err == nil {
 		t.Errorf("Error expected")
 	}
