@@ -101,6 +101,7 @@ func TodasLasNotas(c *gin.Context) {
 	err := models.EntregarNotas(&notas)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
 	}
 	switch orden {
 	case "T":
